@@ -1,21 +1,51 @@
 ﻿using Business.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
+using Entities.Concrete;
+using System;
 
-namespace ConsoleUI
+internal class Program
 {
-    // Solid --> O: Open Closed Principle
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        
+        CategoryTest();
+    }
+
+    private static void CategoryTest()
+    {
+        
+        CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+
+       
+        foreach (var category in categoryManager.GetAll())
         {
-            ProductManager productManager = new ProductManager(new EfProductDal());
+            Console.WriteLine(category.CategoryName);
+        }
+    }
 
-            foreach (var product in productManager.GetByUnitPrice(70, 100))
+    private static void ProductTest()
+    {
+        
+        ProductManager productManager = new ProductManager(new EfProductDal());
+
+       
+        var result = productManager.GetProductDetails();
+
+        
+        if (result.Success == true)
+        {
+            
+            foreach (var product in result.Data)
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(product.ProductName + "/" + product.CategoryName);
             }
-
+        }
+       
+        else
+        {
+           
+            Console.WriteLine(result.Message);
         }
     }
 }
